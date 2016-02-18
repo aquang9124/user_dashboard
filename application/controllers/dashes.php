@@ -21,16 +21,10 @@ class Dashes extends CI_Controller {
 		$this->form_validation->set_rules('password', 'Password', 'required|matches[passconf]|md5');
 		$this->form_validation->set_rules('passconf', 'Password Confirmation', 'required');
 
-		if ($this->session->userdata('count') != true)
-		{
-			$this->session->set_userdata('count', 0);
-		}
-
+		$users = $this->User->retrieve_all();
 		if ($this->form_validation->run() === true)
 		{
-			$count = $this->session->userdata('count');
-			$this->session->set_userdata('count', $count + 1);
-			if ($this->session->userdata('count') === 1)
+			if (empty($users))
 			{
 				$info = array (
 					"first_name" => "{$this->input->post('first_name')}",

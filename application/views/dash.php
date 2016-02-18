@@ -32,13 +32,13 @@
 				<a class="navbar-brand" href="#">Test App</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="dash_home">Dashboard</a></li>
+				<li class="active"><a href="/dash_home">Dashboard</a></li>
 			</ul>
 			<ul class="nav navbar-nav">
-				<li><a href="profile">Profile</a></li>
+				<li><a href="/profile/<?= $this->session->userdata('user_id') ?>">Profile</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="log_off"><span class="glyphicon glyphicon-off"></span> Log Off</a></li>
+				<li><a href="/log_off"><span class="glyphicon glyphicon-off"></span> Log Off</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -57,13 +57,27 @@
 						</tr>
 					</thead>
 					<tbody>
+						<?php 
+					if (isset($user_info)) {
+						foreach($user_info as $user) { ?>
 						<tr>
-							<td>1</td>
-							<td>Alex</td>
-							<td>aq@aq.com</td>
-							<td>Dec 22nd 2015</td>
-							<td>admin</td>
+							<td><?= $user['id'] ?></td>
+							<td><a href="/profile/<?= $user['id'] ?>"><?= $user['first_name'] . ' ' . $user['last_name'] ?></a></td>
+							<td><?= $user['email'] ?></td>
+							<td><?= $user['created_at'] ?></td>
+							<td>
+							<?php
+								if ($user['admin'] === '1') {
+									echo "admin";
+								}
+								else {
+									echo "user";
+								}
+							?>
+							</td>
 						</tr>
+			<?php 		} ?>
+			<?php   } ?>
 					</tbody>
 				</table>
 			</div>

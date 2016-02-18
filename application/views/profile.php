@@ -21,6 +21,36 @@
 		margin-top: 10px;
 		box-shadow: 1px 2px 3px black;
 	}
+	.poster {
+		width: 40%;
+		display: inline-block;
+	}
+	.posttime {
+		display: inline-block;
+		width: 50%;
+		text-align: right;
+		margin-left: 50px;
+	}
+	.the-message {
+		border: 2px solid black;
+		min-height: 50px;
+	}
+	.small-poster {
+		width: 40%;
+		padding-left: 10%;
+		display: inline-block;
+	}
+	.small-posttime {
+		width: 50%;
+		text-align: right;
+		margin-left: 30px;
+		display: inline-block;
+	}
+	.the-comment {
+		border: 2px solid black;
+		width: 90%;
+		margin-left: 10%;
+	}
 </style>
 <body>
 	<nav class="navbar heading">
@@ -29,37 +59,61 @@
 				<a class="navbar-brand" href="#">Test App</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="dash_home">Dashboard</a></li>
+				<li class="active"><a href="/dash_home">Dashboard</a></li>
 			</ul>
 			<ul class="nav navbar-nav">
-				<li><a href="profile">Profile</a></li>
+				<li><a href="/profile/<?= $user_info['id'] ?>">Profile</a></li>
+			</ul>
+			<ul class="nav navbar-nav">
+				<li><a href="/edit_profile/<?= $user_info['id'] ?>">Edit Profile</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="log_off"><span class="glyphicon glyphicon-off"></span> Log Off</a></li>
+				<li><a href="/log_off"><span class="glyphicon glyphicon-off"></span> Log Off</a></li>
 			</ul>
 		</div>
 	</nav>
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-12 col-md-12 col-lg-12">
-				<h1>Michael Choi</h1>
-				<p>Registered at: Dec 24th, 2012</p>
-				<p>User ID: #1</p>
-				<p>Email address: michael@village88.com</p>
-				<p>Description: I am happy to be here!</p>
+				<h1><?= $user_info['first_name'] . ' ' . $user_info['last_name'] ?></h1>
+				<p>Registered at: <?= $user_info['created_at'] ?></p>
+				<p>User ID: <?= $user_info['id'] ?></p>
+				<p>Email address: <?= $user_info['email'] ?></p>
+				<p>Description: <?= $user_info['description'] ?></p>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-12 col-md-12 col-lg-12">
-				<h1>Leave a message for Michael</h1> <!-- Change michael to name variable later -->
-				<form action="post_message" method="post" role="form">
-					<textarea class="form-control" name="message_post"></textarea>
-					<button class="btn btn-success adder">Post</button>
+				<h1>Leave a message for <?= $user_info['first_name'] ?></h1> 
+				<form action="/post_message" method="post" role="form">
+					<textarea class="form-control" name="message"></textarea>
+					<button type="submit" name="message_btn" class="btn btn-success adder" value="<?= $user_info['id'] ?>">Post</button>
 				</form>
 			</div>
 		</div>
+<?php	if (isset($user_messages)) { ?>
+	<?php	foreach ($user_messages as $messages) { ?>
 		<div class="row">
+			<div class="col-sm-12 col-md-12 col-lg-12">
+				<h3 class="poster"><a href="/profile/<?= $messages['poster_id'] ?>"><?= $messages['first_name'] . ' ' . $messages['last_name'] ?></a></h3>
+				<p class="posttime"><?= $messages['created_at'] ?></p>
+				<p class="the-message"><?= $messages['message'] ?></p>
+		<?php 	if (isset($user_comments)) { ?>
+		<?php		foreach ($user_comments as $comments) { ?>
+					<h3 class="small-poster"><small><a href="/profile/<?= $comments['commenter_id'] ?>"><?= $comments['first_name'] . ' ' . $comments['last_name'] ?></a></small></h3>
+					<p class="small-posttime"><small><?= $comments['created_at'] ?></small></p>
+					<p class="the-comment"><small><?= $comments['comment'] ?></small></p>
+		<?php   	} ?>
+		<?php	}	?>
+				<form action="/post_comment" method="post" role="form">
+					<textarea class="form-control" name="comment"></textarea>
+					<input type="hidden" name="id_for_message" value="<?= $messages['message_id'] ?>">
+					<button type="submit" name="comment_btn" class="btn btn-success adder" value="<?= $this->session->userdata('user_id') ?>">Post</button>
+				</form>
+			</div>
 		</div>
+<?php   	} ?>
+<?php	} ?>
 	</div>
 </body>
 </html>

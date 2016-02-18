@@ -24,12 +24,24 @@ class Dashboards extends CI_Controller {
 		$this->load->view('new_user');
 	}
 
-	public function profile() {
-		$this->load->view('profile');
+	public function profile($user_id) {
+		$this->load->model('User');
+		$this->load->model('Message');
+		$this->load->model('Comment');
+		$user_comments = $this->Comment->get_comments($user_id);
+		$user_messages = $this->Message->get_by_id($user_id);
+		$user_info = $this->User->retrieve_user_by_id($user_id);
+		$this->load->view('profile', array(
+			"user_info" => $user_info, 
+			"user_messages" => $user_messages, 
+			"user_comments" => $user_comments
+		));
 	}
 
-	public function edit_profile() {
-		$this->load->view('edit_profile');
+	public function edit_profile($user_id) {
+		$this->load->model('User');
+		$user_info = $this->User->retrieve_user_by_id($user_id);
+		$this->load->view('edit_profile', array("user_info" => $user_info));
 	}
 
 	public function edit_user() {
@@ -88,8 +100,31 @@ class Dashboards extends CI_Controller {
 		else
 		{
 			$this->session->set_flashdata("errors", "<p class='errors'>Please make sure nothing is blank</p>");
-			$user_info = $this->User->retrieve_user_by_id($user_id);
-			$this->load->view('edit_user', array('user_info' => $user_info));
+			redirect('dash_home');
+		}
+	}
+
+	public function edit_info_profile() {
+		$this->load->model('User');
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('first_name', 'First Name', 'trim|required');
+		$this->form_validation->set_rules('last_name', 'Last Name', 'trim|required');
+		$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+		$user_id = $this->input->post('save_btn');
+		$user_info = array(
+			"email" => $this->input->post('email'),
+			"first_name" => $this->input->post('first_name'),
+			"last_name" => $this->input->post('last_name'),
+			"admin" => $this->input->post('user_level')
+		);
+		if ($this->form_validation->run() === true) {
+			$this->User->update_user_info($user_info, $user_id);
+			redirect('dash_home');
+		}
+		else
+		{
+			$this->session->set_flashdata("errors", "<p class='errors'>Please make sure nothing is blank</p>");
+			redirect('dash_home');
 		}
 	}
 
@@ -111,8 +146,63 @@ class Dashboards extends CI_Controller {
 		else
 		{
 			$this->session->set_flashdata("errors", "<p class='errors'>Please make sure nothing is blank</p>");
-			$user_info = $this->User->retrieve_user_by_id($user_id);
-			$this->load->view('edit_user', array('user_info' => $user_info));
+			redirect('dash_home');
+		}
+	}
+
+	public function edit_description() {
+		$this->load->model('User');
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('description', 'Description', 'trim|required');
+
+		$info = array("description" => $this->input->post('description'));
+		$user_id = $this->input->post('desc_btn');
+		if ($this->form_validation->run() === true) {
+			$this->User->update_desc($info, $user_id);
+			redirect('dash_home');
+		}
+		else
+		{
+			redirect('dash_home');
+		}
+	}
+
+	public function new_message() {
+		$this->load->model('Message');
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('message', 'Message', 'trim|required');
+
+		$user_id = $this->session->userdata('user_id');
+		$profile_id = $this->input->post('message_btn');
+		$content = array("message" => $this->input->post('message'));
+
+		if ($this->form_validation->run() === true) {
+			$this->Message->post_message($content, $user_id, $profile_id);
+			redirect('dash_home');
+		}
+		else
+		{
+			redirect('dash_home');
+		}
+		
+	}
+
+	public function new_comment() {
+		$this->load->model('Comment');
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('comment', 'Comment', 'trim|required');
+
+		$message_id = $this->input->post('id_for_message');
+		$poster_id = $this->input->post('comment_btn');
+		$content = array("comment" => $this->input->post('comment'));
+
+		if ($this->form_validation->run() === true) {
+			$this->Comment->post_comment($content, $message_id, $poster_id);
+			redirect('dash_home');
+		}
+		else
+		{
+			redirect('dash_home');
 		}
 	}
 

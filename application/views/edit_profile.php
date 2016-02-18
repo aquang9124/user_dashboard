@@ -24,6 +24,12 @@
 		float: right;
 		box-shadow: 1px 2px 3px black;
 	}
+	.descript {
+		margin-top: 20px;
+	}
+	.texty {
+		margin-bottom: 20px;
+	}
 </style>
 <body>
 	<nav class="navbar heading">
@@ -32,13 +38,13 @@
 				<a class="navbar-brand" href="#">Test App</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="dash_home">Dashboard</a></li>
+				<li class="active"><a href="/dash_home">Dashboard</a></li>
 			</ul>
 			<ul class="nav navbar-nav">
-				<li><a href="profile">Profile</a></li>
+				<li><a href="/profile/<?= $user_info['id'] ?>">Profile</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="log_off"><span class="glyphicon glyphicon-off"></span> Log Off</a></li>
+				<li><a href="/log_off"><span class="glyphicon glyphicon-off"></span> Log Off</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -48,27 +54,28 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-6 col-md-6 col-lg-6">
-				<form action="edit_info" method="post" role="form">
+				<form action="/edit_info_profile" method="post" role="form">
 					<fieldset>
 						<legend>Edit Information</legend>
 						<div class="form-group">
 							<label for="e-mail">Email Address</label>
-							<input type="text" name="email" id="e-mail" placeholder="email">
+							<input type="text" name="email" id="e-mail" placeholder="<?= $user_info['email'] ?>">
 						</div>
 						<div class="form-group">
 							<label for="fname">First Name</label>
-							<input type="text" name="first_name" id="fname" placeholder="first_name">
+							<input type="text" name="first_name" id="fname" placeholder="<?= $user_info['first_name'] ?>">
 						</div>
 						<div class="form-group">
 							<label for="lname">Last Name</label>
-							<input type="text" name="last_name" id="lname" placeholder="last_name">
+							<input type="text" name="last_name" id="lname" placeholder="<?= $user_info['last_name'] ?>">
 						</div>
-						<button class="btn btn-success">Save</button>
+						<input type="hidden" name="user_level" value="<?= $user_info['admin'] ?>">
+						<button type="submit" name="save_btn" class="btn btn-success" value="<?= $user_info['id'] ?>">Save</button>
 					</fieldset>
 				</form>
 			</div>
 			<div class="col-sm-6 col-md-6 col-lg-6">
-				<form action="edit_password" method="post" role="form">
+				<form action="/edit_password" method="post" role="form">
 					<fieldset>
 						<legend>Change Password</legend>
 						<div class="form-group">
@@ -79,18 +86,18 @@
 							<label for="passcon">Confirm Password</label>
 							<input type="password" name="passconf" id="passcon">
 						</div>
-						<button class="btn btn-success">Update Password</button>
+						<button type="submit" name="passchange_btn" class="btn btn-success" value="<?= $user_info['id'] ?>">Update Password</button>
 					</fieldset>
 				</form>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row descript">
 			<div class="col-sm-12 col-md-12 col-lg-12">
-				<form action="edit_description" method="post" role="form">
+				<form action="/edit_description" method="post" role="form">
 					<fieldset>
 						<legend>Edit Description</legend>
-						<textarea class="form-control" name="description"></textarea>
-						<button class="btn btn-success">Save</button>
+						<textarea class="form-control texty" name="description" placeholder="<?= $user_info['description'] ?>"></textarea>
+						<button type="submit" name="desc_btn" class="btn btn-success" value="<?= $user_info['id'] ?>">Save</button>
 					</fieldset>
 				</form>
 			</div>

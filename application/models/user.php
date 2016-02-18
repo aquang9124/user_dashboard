@@ -43,6 +43,12 @@ class User extends CI_Model {
 		$values = array($info['password'], $user_id);
 		return $this->db->query($query, $values);
 	}
+
+	public function update_desc($info, $user_id) {
+		$query = "UPDATE users SET users.description =? WHERE id = ?";
+		$values = array($info['description'], $user_id);
+		return $this->db->query($query, $values);
+	}
 }
 
 

@@ -47,17 +47,12 @@
 	</nav>
 	<div class="container">
 		<div class="row">
-			<?php
-				if ($this->session->flashdata('errors') == true) {
-					echo $this->session->flashdata('errors');
-				}
-			?>
 			<h1 class="inline-h">Edit User <?= $user_info['id'] ?></h1>
-			<a href="dash_home"><button class="adder btn btn-info">Return to dashboard</button></a>
+			<a href="/dash_home"><button class="adder btn btn-info">Return to dashboard</button></a>
 		</div>
 		<div class="row">
 			<div class="col-sm-6 col-md-6 col-lg-6">
-				<form action="edit_info" method="post" role="form">
+				<form action="/edit_info" method="post" role="form">
 					<fieldset>
 						<legend>Edit Information</legend>
 						<div class="form-group">
